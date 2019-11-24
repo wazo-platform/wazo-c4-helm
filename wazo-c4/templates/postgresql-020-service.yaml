@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgresql
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: pgsql
+    app.kubernetes.io/name: postgresql
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: pgsql
+    app.kubernetes.io/part-of: wazo-c4
+    helm.sh/chart: "{{ .Chart.Name }}"
+spec:
+  selector:
+    app: pgsql
+  ports:
+  - protocol: TCP
+    port: 5432
+    targetPort: 5432

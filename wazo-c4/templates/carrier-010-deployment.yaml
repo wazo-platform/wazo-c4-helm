@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: carrier
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: carrier
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: carrier
+    app.kubernetes.io/part-of: wazo-c4
+    helm.sh/chart: "{{ .Chart.Name }}"
+spec:
+  replicas: {{ default 1 .Values.replicas.carrier }}
+  selector:
+    matchLabels:
+      app: carrier
+  template:
+    metadata:
+      labels:
+        app: carrier
+        app.kubernetes.io/name: carrier
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: carrier
+        app.kubernetes.io/part-of: wazo-c4
+        helm.sh/chart: "{{ .Chart.Name }}"
+      annotations:
+        cni: "weave"
+        checksum/config-wazo-c4: {{ include (print $.Template.BasePath "/wazo-c4-010-configmap.yaml") . | sha256sum }}
+    spec:
+      containers:
+      - name: carrier
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 2
+            memory: 2Gi
+        imagePullPolicy: {{ .Values.containers.imagePullPolicy }}
+        image: {{ .Values.containers.registry }}/wazopbx/wazo-c4-carrier:{{ .Values.containers.carrierImageTag }}
+        command: ["/bin/sh"]
+        args: ["-c", "sipp -sf /scenarios/uas.xml"]
+        tty: true
+        ports:
+        - name: carrier-port
+          containerPort: 5060
+          protocol: UDP

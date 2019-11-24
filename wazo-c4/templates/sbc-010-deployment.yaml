@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sbc
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: sbc
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: sbc
+    app.kubernetes.io/part-of: wazo-c4
+    helm.sh/chart: "{{ .Chart.Name }}"
+spec:
+  replicas: {{ default 1 .Values.replicas.sbc }}
+  selector:
+    matchLabels:
+      app: sbc
+  template:
+    metadata:
+      labels:
+        app: sbc
+        app.kubernetes.io/name: sbc
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: sbc
+        app.kubernetes.io/part-of: wazo-c4
+        helm.sh/chart: "{{ .Chart.Name }}"
+      annotations:
+        cni: "weave"
+        checksum/config-wazo-c4: {{ include (print $.Template.BasePath "/wazo-c4-010-configmap.yaml") . | sha256sum }}
+    spec:
+      containers:
+      - name: sbc
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 2
+            memory: 2Gi
+        imagePullPolicy: {{ .Values.containers.imagePullPolicy }}
+        image: {{ .Values.containers.registry }}/wazopbx/wazo-c4-sbc:{{ .Values.containers.SBCImageTag }}
+        tty: true
+        ports:
+        - name: sbc-port
+          containerPort: 5060
+          protocol: UDP
+        envFrom:
+        - configMapRef:
+            name: wazo-c4
+        env:
+        - name: LISTEN
+          value: "udp:eth0:5060"
+        - name: SIP_PORT
+          value: "5060"
+        - name: WITH_DMQ
+          value: "1"
+        - name: DISPATCHER_ALG
+          value: "8"
+        - name: DMQ_PORT
+          value: "5062"
+        - name: DMQ_LISTEN
+          value: "udp:eth0:5062"
+        - name: DMQ_SERVER_ADDRESS
+          value: "sip:eth0:5062"
+        - name: PKG_MEM
+          value: "32"
+        - name: SHM_MEM
+          value: "512"
+        - name: KAMAILIO_CONF
+          value: "/etc/kamailio/kamailio.cfg"
+        # TODO:
+        - name: DMQ_NOTIFICATION_ADDRESS
+          value: "sip:sbc.{{ .Release.Namespace }}.svc.cluster.local:5062"

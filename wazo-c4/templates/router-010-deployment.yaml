@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: router
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: router
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: router
+    app.kubernetes.io/part-of: wazo-c4
+    helm.sh/chart: "{{ .Chart.Name }}"
+spec:
+  replicas: {{ default 1 .Values.replicas.router }}
+  selector:
+    matchLabels:
+      app: router
+  template:
+    metadata:
+      labels:
+        app: router
+        app.kubernetes.io/name: router
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: router
+        app.kubernetes.io/part-of: wazo-c4
+        helm.sh/chart: "{{ .Chart.Name }}"
+      annotations:
+        cni: "weave"
+        checksum/config-wazo-c4: {{ include (print $.Template.BasePath "/wazo-c4-010-configmap.yaml") . | sha256sum }}
+    spec:
+      containers:
+      - name: router
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 2
+            memory: 2Gi
+        imagePullPolicy: {{ .Values.containers.imagePullPolicy }}
+        image: {{ .Values.containers.registry }}/wazopbx/wazo-c4-router:{{ .Values.containers.routerImageTag }}
+        tty: true
+        ports:
+        - name: router-port
+          containerPort: 5060
+          protocol: UDP
+        envFrom:
+        - configMapRef:
+            name: wazo-c4
+        env:
+        - name: ROUTER_AUTH_SECRET
+          value: "ROUTER_AUTH_SHARED_SECRET"
+        - name: HTTP_API_ROUTING_ENDPOINT
+          value: "http://router-confd:8000/kamailio/routing"
+        - name: HTTP_API_CDR_ENDPOINT
+          value: "http://router-confd:8000/kamailio/cdr"
+        - name: HTTP_API_DBTEXT_UACREG_ENDPOINT
+          value: "http://router-confd:8000/kamailio/dbtext/uacreg"
+        - name: HTTP_API_TIMEOUT
+          value: "5000"
+        - name: SIP_PORT
+          value: "5061"
+        - name: LISTEN
+          value: "udp:eth0:5061"
+        - name: WITH_DMQ
+          value: "1"
+        - name: DMQ_PORT
+          value: "5062"
+        - name: DMQ_LISTEN
+          value: "udp:eth0:5062"
+        - name: DMQ_SERVER_ADDRESS
+          value: "sip:eth0:5062"
+        - name: PKG_MEM
+          value: "32"
+        - name: SHM_MEM
+          value: "512"
+        - name: KAMAILIO_CONF
+          value: "/etc/kamailio/kamailio.cfg"
+        # TODO:
+        # - name: LISTEN_ADVERTISE
+        #   value: "router:5061"
+        # - name: ALIAS
+        #   value: "router_secondary:5061"
+        - name: DMQ_NOTIFICATION_ADDRESS
+          value: "sip:router.{{ .Release.Namespace }}.svc.cluster.local:5062"

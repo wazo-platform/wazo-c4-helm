@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgsql
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: pgsql
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: pgsql
+    app.kubernetes.io/part-of: wazo-c4
+    helm.sh/chart: "{{ .Chart.Name }}"
+spec:
+  replicas: {{ default 1 .Values.replicas.pgsql }}
+  selector:
+    matchLabels:
+      app: pgsql
+  template:
+    metadata:
+      labels:
+        app: pgsql
+        app.kubernetes.io/name: pgsql
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: pgsql
+        app.kubernetes.io/part-of: wazo-c4
+        helm.sh/chart: "{{ .Chart.Name }}"
+      annotations:
+        cni: "weave"
+        checksum/config-wazo-c4: {{ include (print $.Template.BasePath "/wazo-c4-010-configmap.yaml") . | sha256sum }}
+    spec:
+      containers:
+      - name: pgsql
+        resources:
+          requests:
+            cpu: 50m
+            memory: 16Mi
+          limits:
+            cpu: 2
+            memory: 2Gi
+        imagePullPolicy: {{ .Values.containers.imagePullPolicy }}
+        image: {{ .Values.containers.registry }}/postgres:{{ .Values.containers.pgsqlImageTag }}
+        envFrom:
+        - configMapRef:
+            name: wazo-c4

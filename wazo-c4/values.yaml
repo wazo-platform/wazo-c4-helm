@@ -1,0 +1,49 @@
+---
+env: wazo
+debug: false
+containers:
+  registry: docker.io
+  imagePullPolicy: IfNotPresent
+  consulImageTag: 1.6
+  SBCImageTag: latest
+  routerImageTag: latest
+  pgsqlImageTag: 11
+  redisImageTag: 5.0-alpine
+  confdImageTag: latest
+  wait4ImageTag: latest
+  rtpeImageTag: latest
+  carrierImageTag: latest
+  testerImageTag: latest
+replicas:
+  apiRouter: 1
+  sbc: 1
+  router: 2
+  rtpe: 2
+  redis: 1
+  pgsql: 1
+  consul: 1
+  routerConfd: 1
+services:
+  confd:
+    host: "router-confd"
+    port: 8000
+  postgresql:
+    host: "postgresql"
+    port: 5432
+  consul:
+    host: "consul"
+    port: 8500
+  sbc:
+    service:
+      host: "sbc"
+      port: 5060
+  router:
+    service:
+      host: "router"
+      port: 5060
+  rtpe:
+    port: 22222
+    redis:
+      host: "redis"
+      port: 6379
+      keyspace: 1

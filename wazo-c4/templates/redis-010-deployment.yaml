@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: redis
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: redis
+    app.kubernetes.io/part-of: wazo-c4
+    helm.sh/chart: "{{ .Chart.Name }}"
+spec:
+  replicas: {{ default 1 .Values.replicas.redis }}
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+        app.kubernetes.io/name: redis
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: redis
+        app.kubernetes.io/part-of: wazo-c4
+        helm.sh/chart: "{{ .Chart.Name }}"
+      annotations:
+        cni: "weave"
+        checksum/config-wazo-c4: {{ include (print $.Template.BasePath "/wazo-c4-010-configmap.yaml") . | sha256sum }}
+    spec:
+      containers:
+      - name: redis
+        resources:
+          requests:
+            cpu: 50m
+            memory: 16Mi
+          limits:
+            cpu: 2
+            memory: 2Gi
+        imagePullPolicy: {{ .Values.containers.imagePullPolicy }}
+        image: {{ .Values.containers.registry }}/redis:{{ .Values.containers.redisImageTag }}
+

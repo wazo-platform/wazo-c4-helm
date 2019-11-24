@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: wazo-c4
+  labels:
+    app.kubernetes.io/name: wazo-c4
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: wazo-c4
+    app.kubernetes.io/part-of: wazo-c4
+    helm.sh/chart: "{{ .Chart.Name }}"
+data:
+  TESTING: "1"
+  CONSUL_URI: "consul:8500"
+  REDIS: "redis:6379/1"
+  POSTGRES_USER: "wazo"
+  POSTGRES_PASSWORD: "wazo"
+  POSTGRES_DB: "wazo"
+  POSTGRES_URI: "postgresql:5432"
+  ROUTER_CONFD_URI: "router-confd:8000"

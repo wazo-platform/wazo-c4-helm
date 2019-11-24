@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: router-confd
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: router-confd
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: router-confd
+    app.kubernetes.io/part-of: wazo-c4
+    helm.sh/chart: "{{ .Chart.Name }}"
+spec:
+  replicas: {{ default 1 .Values.replicas.routerConfd }}
+  selector:
+    matchLabels:
+      app: router-confd
+  template:
+    metadata:
+      labels:
+        app: router-confd
+        app.kubernetes.io/name: router-confd
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: router-confd
+        app.kubernetes.io/part-of: wazo-c4
+        helm.sh/chart: "{{ .Chart.Name }}"
+      annotations:
+        cni: "weave"
+        checksum/config-wazo-c4: {{ include (print $.Template.BasePath "/wazo-c4-010-configmap.yaml") . | sha256sum }}
+    spec:
+      containers:
+      - name: router-confd
+        resources:
+          requests:
+            cpu: 50m
+            memory: 16Mi
+          limits:
+            cpu: 2
+            memory: 2Gi
+        imagePullPolicy: {{ .Values.containers.imagePullPolicy }}
+        image: {{ .Values.containers.registry }}/wazopbx/wazo-router-confd:{{ .Values.containers.confdImageTag }}
+        command: ["/bin/sh"]
+        args: ["-c", "
+            wazo-router-confd
+              --host 0.0.0.0
+              --port 8000
+              --consul-uri http://{{ .Values.services.consul.host }}:{{ .Values.services.consul.port }}
+              --database-uri postgresql://wazo:wazo@{{ .Values.services.postgresql.host }}:{{ .Values.services.postgresql.port }}/wazo
+        "]
+        envFrom:
+        - configMapRef:
+            name: wazo-c4
+

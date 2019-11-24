@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tester
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: tester
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: tester
+    app.kubernetes.io/part-of: wazo-c4
+    helm.sh/chart: "{{ .Chart.Name }}"
+spec:
+  replicas: {{ default 1 .Values.replicas.tester }}
+  selector:
+    matchLabels:
+      app: tester
+  template:
+    metadata:
+      labels:
+        app: tester
+        app.kubernetes.io/name: tester
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: tester
+        app.kubernetes.io/part-of: wazo-c4
+        helm.sh/chart: "{{ .Chart.Name }}"
+      annotations:
+        cni: "weave"
+        checksum/config-wazo-c4: {{ include (print $.Template.BasePath "/wazo-c4-010-configmap.yaml") . | sha256sum }}
+    spec:
+      containers:
+      - name: tester
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 2
+            memory: 2Gi
+        imagePullPolicy: {{ .Values.containers.imagePullPolicy }}
+        image: {{ .Values.containers.registry }}/wazopbx/wazo-tester:{{ .Values.containers.testerImageTag }}
+        command: ["/bin/sh"]
+        args: ["-c", "while true; do sleep 30; done;"]
+        tty: true
+        ports:
+        - name: tester-port
+          containerPort: 5060
+          protocol: UDP
+      #   volumeMounts:
+      #   - mountPath: /tests
+      #     name: tests
+      # volumes:
+      # - name: tests
+      #   hostPath:
+      #     path: /Users/sosic/projects/wazo/wazo-c4/tests

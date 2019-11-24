@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rtpe
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: rtpe
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: rtpe
+    app.kubernetes.io/part-of: wazo-c4
+    helm.sh/chart: "{{ .Chart.Name }}"
+spec:
+  replicas: {{ default 1 .Values.replicas.rtpe }}
+  selector:
+    matchLabels:
+      app: rtpe
+  template:
+    metadata:
+      labels:
+        app: rtpe
+        app.kubernetes.io/name: rtpe
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: rtpe
+        app.kubernetes.io/part-of: wazo-c4
+        helm.sh/chart: "{{ .Chart.Name }}"
+      annotations:
+        cni: "weave"
+        checksum/config-wazo-c4: {{ include (print $.Template.BasePath "/wazo-c4-010-configmap.yaml") . | sha256sum }}
+    spec:
+      containers:
+      - name: rtpe
+        resources:
+          requests:
+            cpu: 50m
+            memory: 16Mi
+          limits:
+            cpu: 2
+            memory: 2Gi
+        imagePullPolicy: {{ .Values.containers.imagePullPolicy }}
+        image: {{ .Values.containers.registry }}/wazopbx/wazo-rtpe:{{ .Values.containers.rtpeImageTag }}
+        envFrom:
+        - configMapRef:
+            name: wazo-c4
+        env:
+        - name: LISTEN_NG
+          value: "22222"
+        - name: SUBSCRIBE_KEYSPACE
+          value: "1"
