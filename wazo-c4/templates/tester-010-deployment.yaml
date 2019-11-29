@@ -47,10 +47,10 @@ spec:
         - name: tester-port
           containerPort: 5060
           protocol: UDP
-      #   volumeMounts:
-      #   - mountPath: /tests
-      #     name: tests
-      # volumes:
-      # - name: tests
-      #   hostPath:
-      #     path: /Users/sosic/projects/wazo/wazo-c4/tests
+          #   volumeMounts:
+          #   - mountPath: /tests
+          #     name: tests
+          # volumes:
+          # - name: tests
+          #   hostPath:
+          #     path: /Users/sosic/projects/wazo/wazo-c4/tests
