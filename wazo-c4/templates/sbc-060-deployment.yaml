@@ -69,6 +69,9 @@ spec:
           value: "512"
         - name: KAMAILIO_CONF
           value: "/etc/kamailio/kamailio.cfg"
-        # TODO:
         - name: DMQ_NOTIFICATION_ADDRESS
           value: "sip:sbc.{{ .Release.Namespace }}.svc.cluster.local:5062"
+        - name: LISTEN_ADVERTISE
+          value: "sip.k8s.wazo.cloud:5060"
+        - name: ALIAS
+          value: "sip.k8s.wazo.cloud:5060"

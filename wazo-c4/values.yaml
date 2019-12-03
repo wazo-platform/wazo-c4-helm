@@ -3,7 +3,7 @@ env: wazo
 debug: false
 containers:
   registry: docker.io
-  imagePullPolicy: IfNotPresent
+  imagePullPolicy: Always
   consulImageTag: 1.6
   SBCImageTag: latest
   routerImageTag: latest
@@ -37,6 +37,7 @@ services:
     service:
       host: "sbc"
       port: 5060
+      nodePort: 30060
   router:
     service:
       host: "router"
