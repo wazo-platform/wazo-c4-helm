@@ -15,7 +15,6 @@ containers:
   carrierImageTag: latest
   testerImageTag: latest
 replicas:
-  apiRouter: 1
   sbc: 1
   router: 2
   rtpe: 2
@@ -27,6 +26,7 @@ services:
   confd:
     host: "router-confd"
     port: 8000
+    ingress: "api.k8s.wazo.cloud"
   postgresql:
     host: "postgresql"
     port: 5432

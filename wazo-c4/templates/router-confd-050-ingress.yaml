@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: router-confd-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    nginx.org/client-max-body-size: "512m"
+    nginx.org/proxy-body-size: "512m"
+spec:
+  tls:
+  - hosts:
+    - {{ .Values.services.confd.ingress }}
+    secretName: wazo-c4-api
+  rules:
+  - host: {{ .Values.services.confd.ingress }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: router-confd
+          servicePort: 8000
