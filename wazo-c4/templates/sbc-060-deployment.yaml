@@ -50,7 +50,13 @@ spec:
             name: wazo-c4
         env:
         - name: LISTEN
-          value: "udp:eth0:5060"
+          value: "udp:net1:5060"
+        - name: INTERFACE_SIP
+          value: "net1"
+        - name: INTERFACE_DMQ
+          value: "eth0"
+        - name: INTERFACE_XHTTP
+          value: "eth0"
         - name: SIP_PORT
           value: "5060"
         - name: WITH_DMQ
@@ -61,8 +67,6 @@ spec:
           value: "5062"
         - name: DMQ_LISTEN
           value: "udp:eth0:5062"
-        - name: DMQ_SERVER_ADDRESS
-          value: "sip:eth0:5062"
         - name: PKG_MEM
           value: "32"
         - name: SHM_MEM

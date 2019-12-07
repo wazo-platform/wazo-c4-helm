@@ -11,6 +11,7 @@ metadata:
     app.kubernetes.io/part-of: wazo-c4
     helm.sh/chart: "{{ .Chart.Name }}"
 data:
+  INTERFACE: "net1"
   TESTING: "1"
   CONSUL_URI: "consul:8500"
   REDIS: "redis:6379/1"
