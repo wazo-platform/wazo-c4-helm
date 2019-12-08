@@ -59,6 +59,12 @@ spec:
           value: "http://router-confd:8000/kamailio/dbtext/uacreg"
         - name: HTTP_API_TIMEOUT
           value: "5000"
+        - name: INTERFACE_SIP
+          value: "eth0"
+        - name: INTERFACE_DMQ
+          value: "eth0"
+        - name: INTERFACE_XHTTP
+          value: "eth0"
         - name: SIP_PORT
           value: "5061"
         - name: LISTEN
