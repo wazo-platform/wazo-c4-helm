@@ -15,13 +15,13 @@ containers:
   carrierImageTag: latest
   testerImageTag: latest
 replicas:
-  sbc: 1
+  sbc: 2
   router: 2
   rtpe: 2
   redis: 1
   pgsql: 1
   consul: 1
-  routerConfd: 1
+  routerConfd: 2
 services:
   confd:
     host: "router-confd"

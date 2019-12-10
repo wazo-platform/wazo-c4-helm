@@ -26,14 +26,7 @@ spec:
         app.kubernetes.io/part-of: wazo-c4
         helm.sh/chart: "{{ .Chart.Name }}"
       annotations:
-        k8s.v1.cni.cncf.io/networks: |
-          [
-            {
-              "name": "macvlan-static",
-              "namespace": "kube-system",
-              "ips": ["10.250.80.100"]
-            }
-          ]
+        k8s.v1.cni.cncf.io/networks: kube-system/macvlan
         checksum/config-wazo-c4: {{ include (print $.Template.BasePath "/wazo-c4-010-configmap.yaml") . | sha256sum }}
     spec:
       containers:
