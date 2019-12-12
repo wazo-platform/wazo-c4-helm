@@ -16,12 +16,12 @@ containers:
   testerImageTag: latest
 replicas:
   sbc: 2
-  router: 2
-  rtpe: 2
+  router: 4
+  rtpe: 4
   redis: 1
   pgsql: 1
   consul: 1
-  routerConfd: 2
+  routerConfd: 4
 services:
   confd:
     host: "router-confd"

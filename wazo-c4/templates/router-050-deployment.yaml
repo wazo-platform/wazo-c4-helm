@@ -71,6 +71,10 @@ spec:
           value: "5061"
         - name: LISTEN
           value: "udp:net1:5061"
+        - name: WITH_REDIS_DIALOG
+          value: "1"
+        - name: DBURL_DIALOG
+          value: "redis://redis:6379/7"
         - name: WITH_DMQ
           value: "1"
         - name: DMQ_PORT

@@ -59,6 +59,10 @@ spec:
           value: "eth0"
         - name: SIP_PORT
           value: "5060"
+        - name: WITH_REDIS_DIALOG
+          value: "1"
+        - name: DBURL_DIALOG
+          value: "redis://redis:6379/6"
         - name: WITH_DMQ
           value: "1"
         - name: DISPATCHER_ALG

@@ -14,7 +14,6 @@ data:
   INTERFACE: "net1"
   TESTING: "1"
   CONSUL_URI: "consul:8500"
-  REDIS: "redis:6379/1"
   POSTGRES_USER: "wazo"
   POSTGRES_PASSWORD: "wazo"
   POSTGRES_DB: "wazo"
