@@ -26,7 +26,6 @@ spec:
         app.kubernetes.io/part-of: wazo-c4
         helm.sh/chart: "{{ .Chart.Name }}"
       annotations:
-        cni: "weave"
         checksum/config-wazo-c4: {{ include (print $.Template.BasePath "/wazo-c4-010-configmap.yaml") . | sha256sum }}
     spec:
       containers:
@@ -59,6 +58,8 @@ spec:
           value: "http://router-confd:8000/kamailio/dbtext/uacreg"
         - name: HTTP_API_TIMEOUT
           value: "5000"
+        - name: HTTP_ASYNC_CLIENT_WORKERS
+          value: "16"
         - name: INTERFACE_SIP
           value: "eth0"
         - name: INTERFACE_DMQ
@@ -69,14 +70,16 @@ spec:
           value: "5061"
         - name: LISTEN
           value: "udp:eth0:5061"
+        - name: WITH_REDIS_DIALOG
+          value: "1"
+        - name: DBURL_DIALOG
+          value: "redis://redis:6379/7"
         - name: WITH_DMQ
           value: "1"
         - name: DMQ_PORT
           value: "5062"
         - name: DMQ_LISTEN
           value: "udp:eth0:5062"
-        - name: DMQ_SERVER_ADDRESS
-          value: "sip:eth0:5062"
         - name: PKG_MEM
           value: "32"
         - name: SHM_MEM

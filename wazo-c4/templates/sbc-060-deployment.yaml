@@ -26,7 +26,6 @@ spec:
         app.kubernetes.io/part-of: wazo-c4
         helm.sh/chart: "{{ .Chart.Name }}"
       annotations:
-        cni: "weave"
         checksum/config-wazo-c4: {{ include (print $.Template.BasePath "/wazo-c4-010-configmap.yaml") . | sha256sum }}
     spec:
       containers:
@@ -59,6 +58,10 @@ spec:
           value: "eth0"
         - name: SIP_PORT
           value: "5060"
+        - name: WITH_REDIS_DIALOG
+          value: "1"
+        - name: DBURL_DIALOG
+          value: "redis://redis:6379/6"
         - name: WITH_DMQ
           value: "1"
         - name: DISPATCHER_ALG
@@ -67,8 +70,6 @@ spec:
           value: "5062"
         - name: DMQ_LISTEN
           value: "udp:eth0:5062"
-        - name: DMQ_SERVER_ADDRESS
-          value: "sip:eth0:5062"
         - name: PKG_MEM
           value: "32"
         - name: SHM_MEM

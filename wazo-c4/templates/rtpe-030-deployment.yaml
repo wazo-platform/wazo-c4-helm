@@ -26,7 +26,6 @@ spec:
         app.kubernetes.io/part-of: wazo-c4
         helm.sh/chart: "{{ .Chart.Name }}"
       annotations:
-        cni: "weave"
         checksum/config-wazo-c4: {{ include (print $.Template.BasePath "/wazo-c4-010-configmap.yaml") . | sha256sum }}
     spec:
       containers:
@@ -48,3 +47,7 @@ spec:
           value: "22222"
         - name: SUBSCRIBE_KEYSPACE
           value: "1"
+        - name: WITH_REDIS
+          value: "1"
+        - name: REDIS
+          value: "redis:6379/1"
