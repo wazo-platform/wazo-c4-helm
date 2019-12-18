@@ -46,6 +46,7 @@ spec:
               --port 8000
               --consul-uri http://{{ .Values.services.consul.host }}:{{ .Values.services.consul.port }}
               --database-uri postgresql://wazo:wazo@{{ .Values.services.postgresql.host }}:{{ .Values.services.postgresql.port }}/wazo
+              --redis-uri redis://redis:6379
         "]
         envFrom:
         - configMapRef:
