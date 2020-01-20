@@ -52,11 +52,11 @@ spec:
         - name: ROUTER_AUTH_SECRET
           value: "ROUTER_AUTH_SHARED_SECRET"
         - name: HTTP_API_ROUTING_ENDPOINT
-          value: "http://router-confd:8000/kamailio/routing"
+          value: "http://router-confd:8000/1.0/kamailio/routing"
         - name: HTTP_API_CDR_ENDPOINT
-          value: "http://router-confd:8000/kamailio/cdr"
+          value: "http://router-confd:8000/1.0/kamailio/cdr"
         - name: HTTP_API_DBTEXT_UACREG_ENDPOINT
-          value: "http://router-confd:8000/kamailio/dbtext/uacreg"
+          value: "http://router-confd:8000/1.0/kamailio/dbtext/uacreg"
         - name: HTTP_API_TIMEOUT
           value: "5000"
         - name: INTERFACE_SIP
