@@ -38,7 +38,7 @@ spec:
             cpu: 2
             memory: 2Gi
         imagePullPolicy: {{ .Values.containers.imagePullPolicy }}
-        image: {{ .Values.containers.registry }}/wazopbx/wazo-c4-carrier:{{ .Values.containers.carrierImageTag }}
+        image: {{ .Values.containers.registry }}/wazoplatform/wazo-c4-carrier:{{ .Values.containers.carrierImageTag }}
         command: ["/bin/sh"]
         args: ["-c", "sipp -sf /scenarios/uas.xml"]
         tty: true

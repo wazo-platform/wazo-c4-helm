@@ -38,7 +38,7 @@ spec:
             cpu: 2
             memory: 2Gi
         imagePullPolicy: {{ .Values.containers.imagePullPolicy }}
-        image: {{ .Values.containers.registry }}/wazopbx/wazo-tester:{{ .Values.containers.testerImageTag }}
+        image: {{ .Values.containers.registry }}/wazoplatform/wazo-tester:{{ .Values.containers.testerImageTag }}
         command: ["/bin/sh"]
         args: ["-c", "while true; do sleep 30; done;"]
         tty: true
